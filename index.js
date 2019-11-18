@@ -7,11 +7,11 @@ const ProviderEngine = require('web3-provider-engine')
 const ProviderSubprovider = require("web3-provider-engine/subproviders/provider.js");
 const ethereumjsWallet = require('ethereumjs-wallet')
 
-function HDWalletProvider (privateKeys, providerUrl) {
+function HDWalletProvider(privateKeys, providerUrl, options) {
 
   this.wallets = {};
   this.addresses = [];
-  
+
   // from https://github.com/trufflesuite/truffle-hdwallet-provider/pull/25/commits
   for (let key of privateKeys) {
     var wallet = ethereumjsWallet.fromPrivateKey(new Buffer(key, "hex"));
@@ -19,7 +19,7 @@ function HDWalletProvider (privateKeys, providerUrl) {
     this.addresses.push(addr);
     this.wallets[addr] = wallet;
   }
-  
+
   const tmpAccounts = this.addresses;
   const tmpWallets = this.wallets;
 
@@ -54,7 +54,7 @@ function HDWalletProvider (privateKeys, providerUrl) {
     })
   )
   this.engine.addProvider(new FiltersSubprovider());
-  this.engine.addProvider(new ProviderSubprovider(new Web3.providers.HttpProvider(providerUrl)));
+  this.engine.addProvider(new ProviderSubprovider(new Web3.providers.HttpProvider(providerUrl), options));
   this.engine.start(); // Required by the provider engine.
 }
 
